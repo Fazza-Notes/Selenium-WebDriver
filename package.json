@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "chromedriver": "^127.0.1",
+    "image-downloader": "^4.3.0",
+    "selenium-webdriver": "^4.23.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.7.0"
+  }
+}
