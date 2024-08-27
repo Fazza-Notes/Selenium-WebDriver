@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "install": "npm install",
+    "test": "mocha swagLabs",
+    "setup": "npm install && mocha swagLabs"
+  },
   "dependencies": {
     "chromedriver": "^127.0.1",
     "image-downloader": "^4.3.0",
