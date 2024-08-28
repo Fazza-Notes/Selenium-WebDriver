@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 describe('Automation Test', function () {
-  const driver = new Builder().forBrowser('chrome').build();
+  const driver = new Builder().forBrowser('MicrosoftEdge').build();
 
   this.timeout(Infinity);
 
