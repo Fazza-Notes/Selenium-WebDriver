@@ -150,21 +150,28 @@ describe('Automation Test', function () {
   async function takeAScreenshot(fileName) {
     const screenshot = await driver.takeScreenshot()
 
-    const forlderPath = path.join(__dirname, 'documentation')
-    const filePath = path.join(forlderPath, fileName)
+    const folderPath = path.join(__dirname, 'documentation')
+    const filePath = path.join(folderPath, fileName)
 
-    if (!fs.existsSync(forlderPath)) {
-      fs.mkdirSync(forlderPath)
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath)
     }
-
     await fs.writeFileSync(`${filePath}`, screenshot, 'base64')
+    // if (!fs.existsSync(filePath)) {
+    //   await fs.writeFileSync(`${filePath}`, screenshot, 'base64')
+    // }
   }
+
+async function scrollToElement(element) {
+    await driver.executeScript('arguments[0].scrollIntoView(true);', element);
+}
 
   describe('Login Page', function () {
     before('Navigate to the website', async () => {
       await driver.manage().window().maximize()
 
       await navigate(baseUrl, '', '')
+      await takeAScreenshot('Login_Page')
     })
 
     it('Login with empty fields', async () => {
@@ -174,6 +181,7 @@ describe('Automation Test', function () {
         .findElement(locators.errorMessage)
         .getText()
       assert.equal(alertMessage, 'Epic sadface: Username is required')
+      await takeAScreenshot('Login_EmptyField')
 
       await clickButton(locators.closeButton)
     })
@@ -187,6 +195,7 @@ describe('Automation Test', function () {
         .findElement(locators.errorMessage)
         .getText()
       assert.equal(alertMessage, 'Epic sadface: Username is required')
+      await takeAScreenshot('Login_EmptyUserName')
 
       await clickButton(locators.closeButton)
     })
@@ -200,6 +209,7 @@ describe('Automation Test', function () {
         .findElement(locators.errorMessage)
         .getText()
       assert.equal(alertMessage, 'Epic sadface: Password is required')
+      await takeAScreenshot('Login_EmptyPassword')
 
       await clickButton(locators.closeButton)
     })
@@ -216,6 +226,7 @@ describe('Automation Test', function () {
         alertMessage,
         'Epic sadface: Sorry, this user has been locked out.'
       )
+      await takeAScreenshot('Login_LockedOutUser')
 
       await clickButton(locators.closeButton)
     })
@@ -227,7 +238,7 @@ describe('Automation Test', function () {
 
       let currentUrl = await driver.getCurrentUrl()
       assert.equal(currentUrl, 'https://www.saucedemo.com/inventory.html')
-      await driver.sleep(2000)
+      await takeAScreenshot('Login_Success')
     })
   })
 
@@ -252,6 +263,7 @@ describe('Automation Test', function () {
         productVolume
       )
       assert.deepEqual(displayedNamesAsc, sortedNamesAsc)
+      await takeAScreenshot('Sort_AscendingByName')
 
       await applySortingOption(locators.optionDscByName)
       const displayedNamesDesc = await getMultiItem(
@@ -259,6 +271,7 @@ describe('Automation Test', function () {
         productVolume
       )
       assert.deepEqual(displayedNamesDesc, sortedNamesDesc)
+      await takeAScreenshot('Sort_DescendingByName')
     })
 
     it('Check ascending & descending sort by price', async () => {
@@ -274,6 +287,7 @@ describe('Automation Test', function () {
         productVolume
       )
       assert.deepEqual(displayedPricesAsc, sortedPricesAsc)
+      await takeAScreenshot('Sort_AscendingByPrice')
 
       await applySortingOption(locators.optionDscByPrice)
       let displayedPricesDesc = await getMultiItem(
@@ -281,6 +295,7 @@ describe('Automation Test', function () {
         productVolume
       )
       assert.deepEqual(displayedPricesDesc, sortedPricesDesc)
+      await takeAScreenshot('Sort_DescendingByPrice')
 
       await driver.sleep(1000)
     })
@@ -289,8 +304,7 @@ describe('Automation Test', function () {
       await clickMultiButton(locators.buttonAdd, productVolume)
 
       const cartBadge = await driver.wait(
-        until.elementLocated(locators.shoppingCartBadge),
-        5000
+        until.elementLocated(locators.shoppingCartBadge), 0
       )
       const isDisplayed = await cartBadge.isDisplayed()
       assert.equal(isDisplayed, true)
@@ -304,12 +318,15 @@ describe('Automation Test', function () {
       )
       const countBadge = await cartBadge.getText()
       assert.deepEqual(countBadge, buttonRemoveVolume.length)
+      
+      await takeAScreenshot('Add_ProductToCart')
     })
 
     it('Check navigation to Cart page', async () => {
       await navigate('', locators.cartButton, '')
       const currentUrl = await driver.getCurrentUrl()
       assert.equal(currentUrl, 'https://www.saucedemo.com/cart.html')
+      await takeAScreenshot('Cart_page')
     })
 
     it('Check navigation to Detail Product page', async () => {
@@ -326,6 +343,7 @@ describe('Automation Test', function () {
         currentUrl,
         `https://www.saucedemo.com/inventory-item.html?id=${randomNumb}`
       )
+      await takeAScreenshot('Product_page')
     })
 
     it('Check navigation to social Twitter', async () => {
@@ -421,6 +439,7 @@ describe('Automation Test', function () {
         assert.equal(isDisplayed, false)
       }
       await verifyTheCartBadge()
+      await takeAScreenshot('Reset_Porduct')
     })
   })
 
